@@ -9,6 +9,7 @@ import 'package:geolocator/geolocator.dart';
 class GetNearestAddressRepositoryImpl extends GetNearestAddressRepository {
 
   double minDistanceInMeters = 0.0;
+  double distanceInMeters = 0.0;
   @override
   Future<NearestAddress> getGetNearestAddress(
       double latitude,
@@ -23,10 +24,12 @@ class GetNearestAddressRepositoryImpl extends GetNearestAddressRepository {
           latitude, longitude);
       Address nearestAddress = addresses[0];
       for(int i=1; i<addresses.length; i++){
-        if(Geolocator.distanceBetween(
+        distanceInMeters = Geolocator.distanceBetween(
             addresses[i].latitude, addresses[i].longitude,
-            latitude, longitude)<minDistanceInMeters) {
+            latitude, longitude);
+        if(distanceInMeters < minDistanceInMeters) {
           nearestAddress = addresses[i];
+          minDistanceInMeters = distanceInMeters;
         }
       }
       return NearestAddress(
